@@ -1,0 +1,8 @@
+C:\Users\Elisa\Documents\GitHub\projet-middlSoc-roux-ragozina\TestClient\bin\Debug\TestClient.exe.config
+C:\Users\Elisa\Documents\GitHub\projet-middlSoc-roux-ragozina\TestClient\bin\Debug\TestClient.exe
+C:\Users\Elisa\Documents\GitHub\projet-middlSoc-roux-ragozina\TestClient\bin\Debug\TestClient.pdb
+C:\Users\Elisa\Documents\GitHub\projet-middlSoc-roux-ragozina\TestClient\obj\Debug\TestClient.csproj.AssemblyReference.cache
+C:\Users\Elisa\Documents\GitHub\projet-middlSoc-roux-ragozina\TestClient\obj\Debug\TestClient.csproj.SuggestedBindingRedirects.cache
+C:\Users\Elisa\Documents\GitHub\projet-middlSoc-roux-ragozina\TestClient\obj\Debug\TestClient.csproj.CoreCompileInputs.cache
+C:\Users\Elisa\Documents\GitHub\projet-middlSoc-roux-ragozina\TestClient\obj\Debug\TestClient.exe
+C:\Users\Elisa\Documents\GitHub\projet-middlSoc-roux-ragozina\TestClient\obj\Debug\TestClient.pdb
