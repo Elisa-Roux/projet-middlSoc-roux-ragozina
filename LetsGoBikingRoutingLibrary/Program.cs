@@ -13,13 +13,7 @@ namespace LetsGoBikingRoutingLibrary
         static void Main(string[] args)
         {
 
-            Uri httpUrl = new Uri("http://localhost:8090/LetsGoBikingService");
-            ServiceHost host = new ServiceHost(typeof(LetsGoBikingService), httpUrl);
-            host.AddServiceEndpoint(typeof(ILetsGoBikingService), new WSHttpBinding(), "");
-
-            ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
-            smb.HttpGetEnabled = true;
-            host.Description.Behaviors.Add(smb);
+            ServiceHost host = new ServiceHost(typeof(LetsGoBikingService));
 
             host.Open();
 

@@ -14,7 +14,7 @@ namespace GenericProxyCache
         {
             Uri httpUrl = new Uri("http://localhost:8090/GenericProxyCache");
             ServiceHost host = new ServiceHost(typeof(GenericProxyCache), httpUrl);
-            host.AddServiceEndpoint(typeof(IGenericProxyCache), new WSHttpBinding(), "");
+            host.AddServiceEndpoint(typeof(IGenericProxyCache), new BasicHttpBinding(), "");
 
             ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
             smb.HttpGetEnabled = true;
