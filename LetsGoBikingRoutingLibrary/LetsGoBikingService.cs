@@ -13,10 +13,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.InteropServices.ComTypes;
 using System.Security.Policy;
 using System.ServiceModel;
 using System.ServiceModel.Configuration;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Xml;
@@ -24,17 +26,21 @@ using static System.Collections.Specialized.BitVector32;
 using Contract = LetsGoBikingRoutingLibrary.ServiceReference1.Contract;
 using GeoCoordinate = System.Device.Location.GeoCoordinate;
 
+
 namespace LetsGoBikingRoutingLibrary
 {
 
     public class LetsGoBikingService : ILetsGoBikingService
     {
         string url, query;
-        string apiKeyORS = "5b3ce3597851110001cf6248d4da20c285e74bb8ac6ec42c0ba2ea00";
+        string apiKeyORS = "5b3ce3597851110001cf6248ab3635969dad46d9bb5c00e367213fe0"; // "5b3ce3597851110001cf6248d4da20c285e74bb8ac6ec42c0ba2ea00";
 
        GenericProxyCacheClient jcd = new GenericProxyCacheClient();
         public string GetItinerary(string originAddress, string destinationAddress)
         {
+            //initialize the producer queue connection
+            ActiveMQProducer.activeMQInitialize();
+
             Position origin = GetCoordinatesFromAddress(originAddress);
             Position destination = GetCoordinatesFromAddress(destinationAddress);
 
@@ -54,31 +60,35 @@ namespace LetsGoBikingRoutingLibrary
             List<String> Station1ToStation2 = GetInstructions(originStation.position, destinationStation.position, "cycling-regular");
             List<String> Station2ToDestination = GetInstructions(destination, destinationStation.position, "foot-walking");
 
-
+            String itineraryStep = "";
             String rep = "\nYou want to go from " + originAddress + " to " + destinationAddress + ". Here is what you should do :\n\n";
-
+            String transportType = "";
+            
             if (GetTotalDuration(origin, originStation.position, destinationStation.position, destination) < GetDuration(origin, destination, "foot-walking"))
             {
                 rep+="\n\n---------------  Walk to " + originStation.name + " in " + closestOriginContract.ToString() + "---------------------- \n\n";
+                itineraryStep += rep; ActiveMQProducer.activeMQSendMessage(itineraryStep);
                 
-                foreach(String s in originToStation1) { rep += s+"\n"; };
+                foreach(String s in originToStation1) { rep += s+"\n"; itineraryStep = s+"\n";  ActiveMQProducer.activeMQSendMessage(itineraryStep); Thread.Sleep(1000); itineraryStep = String.Empty; };
 
-                rep+="\n\n--------------- Then take a bike to " + destinationStation.name + " in " + closestDestinationContract.ToString() + "------------------\n\n";
+                transportType = "\n\n--------------- Then take a bike to " + destinationStation.name + " in " + closestDestinationContract.ToString() + "------------------\n\n";
+                rep += transportType; itineraryStep += transportType; ActiveMQProducer.activeMQSendMessage(itineraryStep);
 
-                foreach (String s in Station1ToStation2) { rep += s+"\n"; };
+                foreach (String s in Station1ToStation2) { rep += s+"\n"; itineraryStep = s + "\n"; ActiveMQProducer.activeMQSendMessage(itineraryStep); Thread.Sleep(1000); itineraryStep = String.Empty; ; };
 
-                rep += "\n\n--------------- Finally walk to " + destination+"----------------------\n\n";
+                transportType =  "\n\n--------------- Finally walk to " + destination+"----------------------\n\n";
+                rep += transportType; itineraryStep += transportType; ActiveMQProducer.activeMQSendMessage(itineraryStep);
 
-                foreach (String s in Station2ToDestination) { rep += s + "\n"; };
+                foreach (String s in Station2ToDestination) { rep += s + "\n"; itineraryStep = s + "\n"; ActiveMQProducer.activeMQSendMessage(itineraryStep); Thread.Sleep(1000); itineraryStep = String.Empty; };
             }
             else
             {
-                rep+="\n\n-------------------- Walk from " + origin + " to " + destination+"----------------------- \n\n";
+                rep+="\n\n-------------------- Walk from " + originAddress + " to " + destinationAddress +"----------------------- \n\n";
+                itineraryStep += rep; ActiveMQProducer.activeMQSendMessage(itineraryStep);
                 List<String> originToDest = GetInstructions(origin, destination, "foot-walking");
-                foreach (String s in originToDest) { rep += s + "\n"; };
+                foreach (String s in originToDest) { rep += s + "\n"; itineraryStep = s + "\n"; ActiveMQProducer.activeMQSendMessage(itineraryStep); Thread.Sleep(1000); itineraryStep = String.Empty; };
             }
-
-            Console.WriteLine(rep);
+            ActiveMQProducer.activeMQClose();
             return rep;
         }
 

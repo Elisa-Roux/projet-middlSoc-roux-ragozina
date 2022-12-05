@@ -43,7 +43,10 @@ namespace LetsGoBikingRoutingLibrary
             //create a message and send it to a queue
             ITextMessage message = session.CreateTextMessage(directions);
             producer.Send(message);
+        }
 
+        public static void activeMQClose()
+        {
             session.Close();
             connection.Close();
         }

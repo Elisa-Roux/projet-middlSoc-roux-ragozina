@@ -70,8 +70,10 @@ public class LetsGoBikingClient {
                     System.out.println(textMessage.getText());
                     textMessage.acknowledge();
                 }
-                //dequeue the itinerary steps at our own speed
-                Thread.sleep(2000);
+                else
+                    break;
+                //dequeue the itinerary steps at our own pace
+                Thread.sleep(1000);
             }
         } catch (JMSException e) {
             //display the itinerary if we cannot access the receiving queue
