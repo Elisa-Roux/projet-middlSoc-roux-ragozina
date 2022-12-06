@@ -6,6 +6,7 @@ using System.ServiceModel.Description;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace LetsGoBikingRoutingLibrary
 {
     internal class Program
@@ -17,6 +18,7 @@ namespace LetsGoBikingRoutingLibrary
 
             host.Open();
 
+
             Console.WriteLine("The service is ready");
             Console.WriteLine("Press <Enter> to stop the service.");
             Console.ReadLine();
@@ -24,5 +26,7 @@ namespace LetsGoBikingRoutingLibrary
             // Close the ServiceHost.
             //host.Close();
         }
+
+        
     }
 }
