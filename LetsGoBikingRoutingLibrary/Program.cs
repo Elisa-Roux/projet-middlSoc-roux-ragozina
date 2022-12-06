@@ -6,6 +6,7 @@ using System.ServiceModel.Description;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace LetsGoBikingRoutingLibrary
 {
     internal class Program
@@ -13,15 +14,10 @@ namespace LetsGoBikingRoutingLibrary
         static void Main(string[] args)
         {
 
-            Uri httpUrl = new Uri("http://localhost:8090/LetsGoBikingService");
-            ServiceHost host = new ServiceHost(typeof(LetsGoBikingService), httpUrl);
-            host.AddServiceEndpoint(typeof(ILetsGoBikingService), new WSHttpBinding(), "");
-
-            ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
-            smb.HttpGetEnabled = true;
-            host.Description.Behaviors.Add(smb);
+            ServiceHost host = new ServiceHost(typeof(LetsGoBikingService));
 
             host.Open();
+
 
             Console.WriteLine("The service is ready");
             Console.WriteLine("Press <Enter> to stop the service.");
@@ -30,5 +26,7 @@ namespace LetsGoBikingRoutingLibrary
             // Close the ServiceHost.
             //host.Close();
         }
+
+        
     }
 }
