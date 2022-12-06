@@ -22,7 +22,7 @@ This project is made up of a server that gives all the instructions necessary fo
 
 ## Helpers in case of fails :link:
 
-- If the ActiveMQProducer.cs file is not automatically imported when you open the solution, you can add it manually
+- If the ActiveMQProducer.cs file is not automatically imported when you open the solution (LetsGoBikingRoutingLibrary), you can add it manually
 - If there were build errors when launching the Java Client, try re-running `mvn clean jaxws:wsimport` then rebuild the project
 - If Maven cannot find necessary dependencies (build error), do File -> Invalidate Caches / Restart
 
@@ -32,7 +32,7 @@ This project is made up of a server that gives all the instructions necessary fo
 
 - There are actually two servers, a main server handling all the logic around finding the routes and a proxy-cache making the requests to the JCDecaux API in order to avoid being banned because making too much requests. 
 
-- The instructions are sent to the client using a queue every second using the ActiveMQ broker. The client receives the next step of their itinerary by reading the instructions enqueued by the server, every second as well. 
+- The instructions are sent to the client using a queue every second using the ActiveMQ broker. The client receives the next step of their itinerary by reading the instructions from the messaging queue, every second as well. 
 
 - The client constantly "listens" to the messaging queue. Therefore, the client can ~immediately read an instruction sent by the server in the queue.
 
