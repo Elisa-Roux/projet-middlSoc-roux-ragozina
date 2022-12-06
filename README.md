@@ -15,7 +15,7 @@ This project is made up of a server that gives all the instructions necessary fo
 
 - Start both of the servers
 
-- Now execute the java command `jaxws:wsimport`
+- Now execute the java command `mvn clean jaxws:wsimport`
 
 - Finally launch the java client (run LetsGoBikingClient.java)
 
@@ -23,7 +23,7 @@ This project is made up of a server that gives all the instructions necessary fo
 ## Helpers in case of fails :link:
 
 - If the ActiveMQProducer.cs file is not automatically imported when you open the solution, you can add it manually
-- If there were build errors when launching the Java Client, try re-running `jaxws:wsimport` then rebuild the project
+- If there were build errors when launching the Java Client, try re-running `mvn clean jaxws:wsimport` then rebuild the project
 - If Maven cannot find necessary dependencies (build error), do File -> Invalidate Caches / Restart
 
 ## Specifities 
