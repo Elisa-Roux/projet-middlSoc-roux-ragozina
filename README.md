@@ -6,15 +6,24 @@ This project is made up of a server that gives all the instructions necessary fo
 
 ## How to deploy the solution :hammer:
 
-### First method
 
-- Launch the `... script` to launch the servers, make sur activeMq is activated (see last section for more information) 
-- 
+- Before starting anything, make sure ActiveMq is running (`activemq start`)
+
+- Then open in **administrator mode** both of the server solutions, LetsGoBikingRoutingLibrary and GenericProxyCache
+
+- Inside LetsGoBikingRoutingLibrary, to avoid any build errors, make sur the NuGet depency package `apache.nms.activemq` is installed 
+
+- Start both of the servers
+
+- Now execute the java command ``
+
+- Finally launch the java client 
+
 
 ## Helpers in case of fails :link:
 
 - If the ActiveMQProducer.cs file is not automatically imported when you open the solution, you can add it manually
-- 
+
 ## Specifities 
 
  - The APIs used in this project are the JCDecaux Open API and the Open Route service API, as they are open sourced. 
@@ -23,7 +32,6 @@ This project is made up of a server that gives all the instructions necessary fo
 
 - The instructions are sent to the client using a queue. Every time the client asks (usually every second), the server will send him the next step of his itinerary. 
 
-- 
 
 ## Out of scope :x:
 
