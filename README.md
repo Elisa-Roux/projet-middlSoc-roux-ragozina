@@ -34,6 +34,8 @@ This project is made up of a server that gives all the instructions necessary fo
 
 - The instructions are sent to the client using a queue every second using the ActiveMQ broker. The client receives the next step of their itinerary by reading the instructions enqueued by the server, every second as well. 
 
+- We've set the sent messages' lifetime to one minute. This helps to automatically dequeue the pending messages in the case if the client or server execution was interrupted and there are still some pending messages left in the process. This helps the client still read the messages at their own comfortable pace before discarding the pending messages. Therefore, we recommend you to wait at least one minute before re-launching a new client request after interrupting a previous one. You risk to fetch the remaining instructions from  the previous request. You can also purge the queue directly from the ActiveMQ console.
+
 
 ## Out of scope :x:
 
