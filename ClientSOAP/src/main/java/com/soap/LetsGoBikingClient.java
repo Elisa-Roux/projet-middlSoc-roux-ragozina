@@ -4,25 +4,20 @@ import com.soap.ws.client.generated.ILetsGoBikingService;
 import com.soap.ws.client.generated.LetsGoBikingService;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.command.ActiveMQQueue;
-
-import javax.jms.Queue;
 
 import javax.jms.*;
 import java.util.Scanner;
-import java.util.Set;
 
-public class LetsGoBikingClient {
+public class LetsGoBikingClient implements MessageListener {
 
     private String name;
     private String password;
     public static final String RECEIVING_QUEUE = "LetsGoBiking";
     public static final String DEFAULT_BROKER_URL = "tcp://localhost:61616";
 
-    //Client data
-    public LetsGoBikingClient(){
-        name = "client";
-        password = "client";
+    public LetsGoBikingClient() {
+        name ="client";
+        password="client";
     }
 
     public LetsGoBikingClient(String uname, String upassword){
@@ -30,15 +25,15 @@ public class LetsGoBikingClient {
         password = upassword;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public String getPassword() {
         return password;
     }
 
-    public static void main(String[] argv){
+    public String getName() {
+        return name;
+    }
+
+    public static void main(String[] args) {
 
         //initialize the client data
         LetsGoBikingClient client = new LetsGoBikingClient();
@@ -46,47 +41,64 @@ public class LetsGoBikingClient {
         //get the client's itinerary starting and end points
         String[] inputData = getUserInput();
 
-        //create a connection
+        Connection connection = null;
+
         ConnectionFactory factory = new ActiveMQConnectionFactory(client.getName(), client.getPassword(), DEFAULT_BROKER_URL);
-        ActiveMQConnection connection = null;
-        try{
+
+        try {
+
             connection = (ActiveMQConnection) factory.createConnection();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-            Queue rQueue = session.createQueue(RECEIVING_QUEUE);
-            //declare a consumer for the receiving queue
+            Queue rQueue = session.createQueue("LetsGoBiking");
+
             MessageConsumer consumer = session.createConsumer(rQueue);
+
+            connection.start();
+
+            consumer.setMessageListener(client);
 
             //fetch the user's input coordinates and pass them to the SOAP server
             getUserItinerary(inputData[0], inputData[1]);
 
-            connection.start();
+            consumer.close();
+            session.close();
 
-            //listen to incoming messages from the SOAP server via the receiving queue
-            while(true){
-                Message message = consumer.receive();
-                if(message instanceof TextMessage){
-                    TextMessage textMessage = (TextMessage) message;
-                    System.out.println(textMessage.getText());
-                    textMessage.acknowledge();
-                }
-                else
-                    break;
-                //dequeue the itinerary steps at our own pace
-                Thread.sleep(1000);
-            }
         } catch (JMSException e) {
             //display the itinerary if we cannot access the receiving queue
             System.out.println("WARNING :Could not connect to the LetsGoBiking queue");
             System.out.println(getUserItinerary(inputData[0], inputData[1]));
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException e) {
+                    System.out.println("Could not close an open connection...");
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onMessage(Message message) {
+        try {
+            if (message instanceof TextMessage) {
+                String text = ((TextMessage) message).getText();
+                if ("STOP".equals(text)) {
+                    System.out.println("You have arrived at your destination !");
+                    message.acknowledge();
+                } else {
+                    System.out.println(text);
+                    message.acknowledge();
+                    //consume messages at our own pace
+                    Thread.sleep(1000);
+                }
+            }
+        } catch (JMSException e) {
+            System.out.println("JMS Exception");
+            System.exit(-1);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        } finally {
-            try{
-                connection.close();
-            } catch (JMSException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -107,7 +119,7 @@ public class LetsGoBikingClient {
             System.err.println("Couldn't fetch your origin and/or destination, please try again");
             System.exit(-1);
         }
-        System.out.println("Looking for directions...");
+        System.out.println("Processing the coordonates...");
 
         //get the LetsGoBiking service
         LetsGoBikingService l = new LetsGoBikingService();

@@ -34,15 +34,14 @@ namespace LetsGoBikingRoutingLibrary
 
             // Create a Producer targetting the selected queue.
             producer = session.CreateProducer(destination);
-
-            producer.DeliveryMode = MsgDeliveryMode.NonPersistent;
         }
 
         public static void activeMQSendMessage(String directions)
         {
             //create a message and send it to a queue
             ITextMessage message = session.CreateTextMessage(directions);
-            producer.Send(message);
+            //send a message with a lifetime of 1 minute, non-persistent in the database so that we can purge the queue semi-automatically
+            producer.Send(message:message,deliveryMode:MsgDeliveryMode.NonPersistent, priority: MsgPriority.Normal, timeToLive:TimeSpan.FromMinutes(1));
         }
 
         public static void activeMQClose()
