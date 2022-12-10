@@ -120,10 +120,10 @@ namespace LetsGoBikingRoutingLibrary
                         updateMessage(s);
                     };
                 }
-                ActiveMQProducer.activeMQClose();
             }
             ActiveMQProducer.activeMQSendMessage("STOP");
             currentStep = ExecutionStep.Idle;
+            ActiveMQProducer.activeMQClose();
             return rep;
 
         }
